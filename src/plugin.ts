@@ -1,6 +1,8 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
+import midi from 'webmidi';
+
 import {
   Application, IPlugin
 } from '@phosphor/application';
@@ -18,6 +20,8 @@ import * as widgetExports from './widget';
 import {
   MODULE_NAME, MODULE_VERSION
 } from './version';
+
+import { PromiseDelegate } from '@phosphor/coreutils';
 
 const EXTENSION_ID = '@jupyter-widgets/midicontrols:plugin';
 
@@ -37,10 +41,23 @@ export default examplePlugin;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: Application<Widget>, registry: IJupyterWidgetRegistry): void {
+async function activateWidgetExtension(app: Application<Widget>, registry: IJupyterWidgetRegistry): Promise<void> {
   registry.registerWidget({
     name: MODULE_NAME,
     version: MODULE_VERSION,
     exports: widgetExports,
   });
+
+  const midiEnabled = new PromiseDelegate<void>();
+  midi.enable(function(err) {
+    if (err) {
+      midiEnabled.reject(err);
+    } else {
+      midiEnabled.resolve(undefined);
+    }
+  });  
+  await midiEnabled.promise;
+  if (!(midi.inputs[0] && midi.outputs[0])) {
+    throw new Error("Could not find MIDI device");
+  }
 }

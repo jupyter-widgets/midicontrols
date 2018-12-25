@@ -44,11 +44,13 @@
     "test:firefox": "karma start --browsers=Firefox tests/karma.conf.js",
     "test:ie": "karma start --browsers=IE tests/karma.conf.js",
     "watch": "npm-run-all -p watch:*",
-    "watch:lib": "tsc -w --project src",
+    "watch:lib": "tsc -w",
     "watch:nbextension": "webpack --watch"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^1.1.10"
+    "@jupyter-widgets/base": "^1.1.10",
+    "@phosphor/signaling": "^1.2.2",
+    "webmidi": "^2.3.0"
   },
   "devDependencies": {
     "@phosphor/application": "^1.6.0",

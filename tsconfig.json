@@ -10,11 +10,11 @@
     "outDir": "lib",
     "resolveJsonModule": true,
     "rootDir": "src",
-    "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
+    "strictNullChecks": false,
     "target": "es2015",
     "types": ["node"]
   },
-  "include": ["src/*"]
+  "include": ["src/**/*.ts"]
 }
