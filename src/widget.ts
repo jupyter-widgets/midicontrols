@@ -243,11 +243,11 @@ export class XTouchMiniModel extends DOMWidgetModel {
       throw new Error('WebMidi library not enabled');
     }
     // Make sure we are in MCU protocol mode
-    // midi.outputs[0].sendChannelMode(
-    //   127,
-    //   1 /* MCU mode */,
-    //   1 /* global channel */
-    // );
+    midi.outputs[0].sendChannelMode(
+      127,
+      1 /* MCU mode */,
+      1 /* global channel */
+    );
     this.setup().then((controls: any) => {
       this.set(controls);
       this.save_changes();
