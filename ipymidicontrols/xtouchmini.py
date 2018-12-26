@@ -20,7 +20,7 @@ class Button(DOMWidget):
     _model_name = Unicode('ButtonModel').tag(sync=True)
     _model_module = Unicode(module_name).tag(sync=True)
     _model_module_version = Unicode(module_version).tag(sync=True)
-    _view_name = Unicode('ButtonView').tag(sync=True)
+    _view_name = Unicode('ValueView').tag(sync=True)
     _view_module = Unicode(module_name).tag(sync=True)
     _view_module_version = Unicode(module_version).tag(sync=True)
 
@@ -36,7 +36,7 @@ class _IntRange(DOMWidget):
     _model_name = Unicode('').tag(sync=True)
     _model_module = Unicode(module_name).tag(sync=True)
     _model_module_version = Unicode(module_version).tag(sync=True)
-    _view_name = Unicode('IntRangeView').tag(sync=True)
+    _view_name = Unicode('ValueView').tag(sync=True)
     _view_module = Unicode(module_name).tag(sync=True)
     _view_module_version = Unicode(module_version).tag(sync=True)
 
@@ -86,7 +86,7 @@ class Rotary(_IntRange):
     """A widget representing a rotary knob on a MIDI controller.
     """
     _model_name = Unicode('RotaryModel').tag(sync=True)
-    _view_name = Unicode('RotaryView').tag(sync=True)
+
     light_mode = CaselessStrEnum(
         values=['single', 'trim', 'wrap', 'spread'], default_value='single',
         help="""How the lights around the rotary dial indicate the value.""").tag(sync=True)
@@ -96,6 +96,8 @@ class Fader(_IntRange):
     """A widget representing a fader on a MIDI controller.
     """
     _model_name = Unicode('FaderModel').tag(sync=True)
+    max = CInt(127, help="Max value").tag(sync=True)
+
 
 @register
 class XTouchMini(DOMWidget):
@@ -119,4 +121,7 @@ class XTouchMini(DOMWidget):
         sync=True, **widget_serialization)
 
     rotary_encoders = ipywidgets.trait_types.TypedTuple(trait=Instance(Rotary), help="Rotary encoders left to right").tag(
+        sync=True, **widget_serialization)
+
+    faders = ipywidgets.trait_types.TypedTuple(trait=Instance(Fader), help="Fader").tag(
         sync=True, **widget_serialization)

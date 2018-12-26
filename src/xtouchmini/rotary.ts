@@ -30,7 +30,7 @@ export class Rotary extends Disposable {
         let sign = e.value & 0x40 ? -1 : 1;
         let increment = sign * (e.value & 0x3f);
         console.log(increment);
-        this.value = this.value + increment;
+        this.value += increment;
       }
     });
     this.value = value;
@@ -97,7 +97,7 @@ export class Rotary extends Disposable {
   }
 
   /**
-   * Setting the max may bump the value and max if necessary.
+   * Setting the max may bump the value and min if necessary.
    */
   get max() {
     return this._max;

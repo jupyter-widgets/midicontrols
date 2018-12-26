@@ -14,6 +14,7 @@ import {
 import { MODULE_NAME, MODULE_VERSION } from './version';
 import { Button } from './xtouchmini/button';
 import { Rotary } from './xtouchmini/rotary';
+import { Fader } from './xtouchmini/fader';
 
 export class ButtonModel extends DOMWidgetModel {
   defaults() {
@@ -22,7 +23,7 @@ export class ButtonModel extends DOMWidgetModel {
       _model_name: 'ButtonModel',
       _model_module: MODULE_NAME,
       _model_module_version: MODULE_VERSION,
-      _view_name: 'ButtonView',
+      _view_name: 'ValueView',
       _view_module: MODULE_NAME,
       _view_module_version: MODULE_VERSION,
 
@@ -82,7 +83,7 @@ export class RotaryModel extends DOMWidgetModel {
       _model_name: 'RotaryModel',
       _model_module: MODULE_NAME,
       _model_module_version: MODULE_VERSION,
-      _view_name: 'RotaryView',
+      _view_name: 'ValueView',
       _view_module: MODULE_NAME,
       _view_module_version: MODULE_VERSION,
 
@@ -146,6 +147,69 @@ export class RotaryModel extends DOMWidgetModel {
   private _rotary: Rotary;
 }
 
+export class FaderModel extends DOMWidgetModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: 'FaderModel',
+      _model_module: MODULE_NAME,
+      _model_module_version: MODULE_VERSION,
+      _view_name: 'ValueView',
+      _view_module: MODULE_NAME,
+      _view_module_version: MODULE_VERSION,
+
+      // Private attributes for just this widget
+      _control: 0,
+
+      value: 0,
+      min: 0,
+      max: 127
+    };
+  }
+
+  initialize(attributes: any, options: any) {
+    super.initialize(attributes, options);
+    if (!midi.enabled) {
+      throw new Error('WebMidi library not enabled');
+    }
+    const values = {...this.defaults(), ...attributes};
+    this._fader = new Fader(values._control, {
+      min: values.min,
+      max: values.max,
+      value: values.value
+    });
+    this._fader.stateChanged.connect((sender, args) => {
+      switch (args.name) {
+        case 'value':
+        case 'min':
+        case 'max':
+          this.set(args.name, args.newValue);
+          break;
+      }
+      this.save_changes();
+    });
+    this.listenTo(this, 'change', () => {
+      const changed = this.changedAttributes() || {};
+      if (changed.hasOwnProperty('value')) {
+        this._fader.value = changed.value;
+      }
+      if (changed.hasOwnProperty('min')) {
+        this._fader.min = changed.min;
+      }
+      if (changed.hasOwnProperty('max')) {
+        this._fader.max = changed.max;
+      }
+    });
+  }
+
+  destroy(options: any) {
+    this._fader.dispose();
+    super.destroy(options);
+  }
+
+  private _fader: Fader;
+}
+
 export class XTouchMiniModel extends DOMWidgetModel {
   defaults() {
     return {
@@ -196,8 +260,8 @@ export class XTouchMiniModel extends DOMWidgetModel {
       buttons: Promise.all(this._createButtons()),
       side_buttons: Promise.all(this._createSideButtons()),
       rotary_encoders: Promise.all(this._createRotaryEncoders()),
-      rotary_buttons: Promise.all(this._createRotaryButtons())
-      // faders: this._createFaders()
+      rotary_buttons: Promise.all(this._createRotaryButtons()),
+      faders: Promise.all(this._createFaders())
     });
   }
 
@@ -255,6 +319,15 @@ export class XTouchMiniModel extends DOMWidgetModel {
     );
   }
 
+  _createFaders() {
+    // Fader are indexed left to right.
+    return [9].map(_control =>
+      this._createFaderModel({
+        _control
+      })
+    );
+  }
+
   /**
    * Creates a button widget.
    */
@@ -264,7 +337,7 @@ export class XTouchMiniModel extends DOMWidgetModel {
         model_name: 'ButtonModel',
         model_module: MODULE_NAME,
         model_module_version: MODULE_VERSION,
-        view_name: 'ButtonView',
+        view_name: 'ValueView',
         view_module: MODULE_NAME,
         view_module_version: MODULE_VERSION
       },
@@ -273,7 +346,7 @@ export class XTouchMiniModel extends DOMWidgetModel {
   }
 
   /**
-   * Creates a button widget.
+   * Creates a rotary encoder widget.
    */
   async _createRotaryModel(state: any): Promise<ButtonModel> {
     return (await this.widget_manager.new_widget(
@@ -281,7 +354,24 @@ export class XTouchMiniModel extends DOMWidgetModel {
         model_name: 'RotaryModel',
         model_module: MODULE_NAME,
         model_module_version: MODULE_VERSION,
-        view_name: 'RotaryView',
+        view_name: 'ValueView',
+        view_module: MODULE_NAME,
+        view_module_version: MODULE_VERSION
+      },
+      state
+    )) as ButtonModel;
+  }
+
+  /**
+   * Creates a fader widget.
+   */
+  async _createFaderModel(state: any): Promise<ButtonModel> {
+    return (await this.widget_manager.new_widget(
+      {
+        model_name: 'FaderModel',
+        model_module: MODULE_NAME,
+        model_module_version: MODULE_VERSION,
+        view_name: 'ValueView',
         view_module: MODULE_NAME,
         view_module_version: MODULE_VERSION
       },
@@ -290,18 +380,7 @@ export class XTouchMiniModel extends DOMWidgetModel {
   }
 }
 
-export class ButtonView extends DOMWidgetView {
-  render() {
-    this.value_changed();
-    this.model.on('change:value', this.value_changed, this);
-  }
-
-  value_changed() {
-    this.el.textContent = this.model.get('value');
-  }
-}
-
-export class RotaryView extends DOMWidgetView {
+export class ValueView extends DOMWidgetView {
   render() {
     this.value_changed();
     this.model.on('change:value', this.value_changed, this);
