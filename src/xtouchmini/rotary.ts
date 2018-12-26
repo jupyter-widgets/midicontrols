@@ -4,8 +4,9 @@
 import midi from 'webmidi';
 import { clamp, IChangedArgs } from './utils';
 import { ISignal, Signal } from '@phosphor/signaling';
+import { Disposable } from './disposable';
 
-export class Rotary {
+export class Rotary extends Disposable {
   /**
    * control is the midi CC number.
    */
@@ -18,6 +19,7 @@ export class Rotary {
       value = 50
     }: Rotary.IOptions = {}
   ) {
+    super();
     this._control = control;
     this._lightMode = lightMode;
     this._min = min;
@@ -63,6 +65,56 @@ export class Rotary {
       this.refresh();
       this._stateChanged.emit({
         name: 'value',
+        oldValue,
+        newValue
+      });
+    }
+  }
+
+  /**
+   * Setting the min may bump the value and max if necessary.
+   */
+  get min() {
+    return this._min;
+  }
+  set min(newValue: number) {
+    const oldValue = this._min;
+    if (oldValue !== newValue) {
+      if (newValue > this.value) {
+        this.value = newValue;
+      }
+      if (newValue > this.max) {
+        this.max = newValue;
+      }
+      this._min = newValue;
+      this.refresh();
+      this._stateChanged.emit({
+        name: 'min',
+        oldValue,
+        newValue
+      });
+    }
+  }
+
+  /**
+   * Setting the max may bump the value and max if necessary.
+   */
+  get max() {
+    return this._max;
+  }
+  set max(newValue: number) {
+    const oldValue = this._max;
+    if (oldValue !== newValue) {
+      if (newValue < this.value) {
+        this.value = newValue;
+      }
+      if (newValue < this.min) {
+        this.min = newValue;
+      }
+      this._max = newValue;
+      this.refresh();
+      this._stateChanged.emit({
+        name: 'max',
         oldValue,
         newValue
       });
@@ -119,6 +171,8 @@ export namespace Rotary {
 
   export type IStateChanged =
     | IChangedArgs<number, 'value'>
+    | IChangedArgs<number, 'min'>
+    | IChangedArgs<number, 'max'>
     | IChangedArgs<LightMode, 'lightMode'>;
 }
 

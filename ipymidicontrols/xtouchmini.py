@@ -10,7 +10,7 @@ TODO: Add module docstring
 
 from ipywidgets import DOMWidget, widget_serialization, register
 import ipywidgets
-from traitlets import Unicode, CaselessStrEnum, Bool, CInt, validate, Instance
+from traitlets import Unicode, CaselessStrEnum, Bool, CInt, validate, Instance, TraitError
 from ._frontend import module_name, module_version
 
 @register
@@ -51,8 +51,6 @@ class _IntRange(DOMWidget):
             kwargs['min'] = min
         if max is not None:
             kwargs['max'] = max
-        if step is not None:
-            kwargs['step'] = step
         super(DOMWidget, self).__init__(**kwargs)
 
     @validate('value')
@@ -88,7 +86,7 @@ class Rotary(_IntRange):
     """A widget representing a rotary knob on a MIDI controller.
     """
     _model_name = Unicode('RotaryModel').tag(sync=True)
-
+    _view_name = Unicode('RotaryView').tag(sync=True)
     light_mode = CaselessStrEnum(
         values=['single', 'trim', 'wrap', 'spread'], default_value='single',
         help="""How the lights around the rotary dial indicate the value.""").tag(sync=True)
@@ -118,4 +116,7 @@ class XTouchMini(DOMWidget):
         sync=True, **widget_serialization)
 
     rotary_buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Rotary buttons left to right").tag(
+        sync=True, **widget_serialization)
+
+    rotary_encoders = ipywidgets.trait_types.TypedTuple(trait=Instance(Rotary), help="Rotary encoders left to right").tag(
         sync=True, **widget_serialization)
