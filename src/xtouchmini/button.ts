@@ -5,11 +5,12 @@ import midi from 'webmidi';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 import { IChangedArgs } from './utils';
+import { Disposable } from './disposable';
 
 /**
  * A button
  */
-export class MCUButton {
+export class Button extends Disposable {
   /**
    * @param control - the note number corresponding to the button
    * @param light - true when there is an indicator light for the button that
@@ -17,8 +18,9 @@ export class MCUButton {
    */
   constructor(
     control: number,
-    { mode = 'momentary', light = true }: MCUButton.IOptions = {}
+    { mode = 'momentary', light = true }: Button.IOptions = {}
   ) {
+    super();
     this._control = control;
     this._mode = mode;
     this._light = light;
@@ -62,7 +64,7 @@ export class MCUButton {
   get mode() {
     return this._mode;
   }
-  set mode(newValue: MCUButton.ButtonMode) {
+  set mode(newValue: Button.ButtonMode) {
     const oldValue = this._mode;
     if (oldValue !== newValue) {
       this._mode = newValue;
@@ -105,24 +107,24 @@ export class MCUButton {
   /**
    * A signal fired when the widget state changes.
    */
-  get stateChanged(): ISignal<this, MCUButton.IStateChanged> {
+  get stateChanged(): ISignal<this, Button.IStateChanged> {
     return this._stateChanged;
   }
 
   private _click = new Signal<this, void>(this);
-  private _stateChanged = new Signal<this, MCUButton.IStateChanged>(this);
+  private _stateChanged = new Signal<this, Button.IStateChanged>(this);
 
   private _control: number;
   private _light: boolean;
-  private _mode: MCUButton.ButtonMode;
+  private _mode: Button.ButtonMode;
   private _toggled = false;
 }
 
-export namespace MCUButton {
+export namespace Button {
   export type ButtonMode = 'momentary' | 'toggle';
 
   export interface IOptions {
-    mode?: MCUButton.ButtonMode;
+    mode?: Button.ButtonMode;
     light?: boolean;
   }
 

@@ -5,7 +5,7 @@ import midi from 'webmidi';
 import { clamp, IChangedArgs } from './utils';
 import { ISignal, Signal } from '@phosphor/signaling';
 
-export class MCUKnob {
+export class Rotary {
   /**
    * control is the midi CC number.
    */
@@ -16,7 +16,7 @@ export class MCUKnob {
       min = 0,
       max = 100,
       value = 50
-    }: MCUKnob.IOptions = {}
+    }: Rotary.IOptions = {}
   ) {
     this._control = control;
     this._lightMode = lightMode;
@@ -36,7 +36,7 @@ export class MCUKnob {
 
   refresh() {
     let factor = this._lightMode === 'spread' ? 6.999999 : 10.999999;
-    // MCU assumes 11 leds around rotary, so convert value to between 1 and 11
+    //  assumes 11 leds around rotary, so convert value to between 1 and 11
     let leds =
       Math.trunc(
         ((this._value - this._min) / (this._max - this._min)) * factor
@@ -79,7 +79,7 @@ export class MCUKnob {
   get lightMode() {
     return this._lightMode;
   }
-  set lightMode(newValue: MCUKnob.LightMode) {
+  set lightMode(newValue: Rotary.LightMode) {
     const oldValue = this._lightMode;
     if (oldValue !== newValue) {
       this._lightMode = newValue;
@@ -95,20 +95,20 @@ export class MCUKnob {
   /**
    * A signal fired when the widget state changes.
    */
-  get stateChanged(): ISignal<this, MCUKnob.IStateChanged> {
+  get stateChanged(): ISignal<this, Rotary.IStateChanged> {
     return this._stateChanged;
   }
 
-  private _stateChanged = new Signal<this, MCUKnob.IStateChanged>(this);
+  private _stateChanged = new Signal<this, Rotary.IStateChanged>(this);
 
   private _value: number;
-  private _lightMode: MCUKnob.LightMode;
+  private _lightMode: Rotary.LightMode;
   private _min: number;
   private _max: number;
   private _control: number;
 }
 
-export namespace MCUKnob {
+export namespace Rotary {
   export interface IOptions {
     lightMode?: LightMode;
     min?: number;
@@ -125,7 +125,7 @@ export namespace MCUKnob {
 /**
  * Map from the knob light mode to the appropriate MIDI command.
  */
-const lightModeNums = new Map<MCUKnob.LightMode, number>([
+const lightModeNums = new Map<Rotary.LightMode, number>([
   ['single', 0],
   ['trim', 0x10],
   ['wrap', 0x20],

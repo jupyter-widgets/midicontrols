@@ -1,17 +1,17 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { MCUButton } from './mcubutton';
+import { Button } from './button';
 
 /**
  * A group of toggle buttons, one of which can be selected.
  */
-export class MCUButtonGroup {
-  constructor(buttons: MCUButton[]) {
+export class ButtonGroup {
+  constructor(buttons: Button[]) {
     this._buttons = buttons;
     this._activeIndex = 0;
     // Any time a button's state changes, set all other buttons to not toggled.
-    const updateActive = (button: MCUButton, args: MCUButton.IStateChanged) => {
+    const updateActive = (button: Button, args: Button.IStateChanged) => {
       if (args.name === 'toggled' && args.newValue === true) {
         this.activeIndex = this._buttons.indexOf(button);
       }
@@ -34,7 +34,7 @@ export class MCUButtonGroup {
     }
   }
 
-  private _buttons: MCUButton[];
+  private _buttons: Button[];
   private _activeIndex: number;
 
   // Perhaps this logic can be on the python side. We just want a toggle button on the js side?

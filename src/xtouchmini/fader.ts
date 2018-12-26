@@ -7,7 +7,7 @@ import { clamp } from './utils';
 
 export type Nibble = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
 
-export class MCUFader {
+export class Fader {
   /**
    * control is the midi pitchblend channel number.
    */
@@ -18,7 +18,7 @@ export class MCUFader {
       max = 127,
       value = 50,
       motorized = false
-    }: MCUFader.IOptions = {}
+    }: Fader.IOptions = {}
   ) {
     this._channel = channel;
     this._motorized = motorized;
@@ -64,7 +64,7 @@ export class MCUFader {
   private _value: number;
 }
 
-export namespace MCUFader {
+export namespace Fader {
   export interface IOptions {
     min?: number;
     max?: number;
