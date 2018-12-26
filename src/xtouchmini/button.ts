@@ -33,7 +33,6 @@ export class Button extends Disposable {
 
     midi.inputs[0].addListener('noteoff', 1, e => {
       if (e.note.number === this._control) {
-        console.log(`button ${control} click emitted`);
         this._click.emit(undefined);
         this.toggled = !this._toggled;
         this.refresh();
@@ -50,7 +49,6 @@ export class Button extends Disposable {
       this._toggled = newValue;
       this.refresh();
       this._stateChanged.emit({ name: 'toggled', oldValue, newValue });
-      console.log(`Button ${this._control}: ${newValue}`);
     }
   }
 

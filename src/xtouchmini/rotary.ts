@@ -29,7 +29,6 @@ export class Rotary extends Disposable {
         // Value is relative
         let sign = e.value & 0x40 ? -1 : 1;
         let increment = sign * (e.value & 0x3f);
-        console.log(increment);
         this.value += increment;
       }
     });
