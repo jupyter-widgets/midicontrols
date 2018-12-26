@@ -127,26 +127,27 @@ class XTouchMini(DOMWidget):
         sync=True, **widget_serialization)
 
 
-from ipywidgets import IntSlider, Checkbox, HBox, VBox, link
+from ipywidgets import IntSlider, Checkbox, HBox, VBox, link, Layout
 
 def xtouchmini_ui(x):
-    knobs = [IntSlider(orientation='vertical', layout={'width': '24px'}) for i in x.rotary_encoders]
+    layout = Layout(width='24px')
+    knobs = [IntSlider(orientation='vertical', layout=layout) for i in x.rotary_encoders]
     for i,j in zip(x.rotary_encoders, knobs):
         link((i, 'value'), (j, 'value'))
 
-    knob_buttons = [Checkbox(indent=False, layout={'width':'24px'}) for i in x.rotary_buttons]
+    knob_buttons = [Checkbox(indent=False, layout=layout) for i in x.rotary_buttons]
     for i,j in zip(x.rotary_buttons, knob_buttons):
         link((i, 'value'), (j, 'value'))
 
-    buttons = [Checkbox(indent=False, layout={'width':'24px'}) for i in x.buttons]
+    buttons = [Checkbox(indent=False, layout=layout) for i in x.buttons]
     for i,j in zip(x.buttons, buttons):
         link((i, 'value'), (j, 'value'))
 
-    side_buttons = [Checkbox() for i in x.side_buttons]
+    side_buttons = [Checkbox(indent=False, layout=layout) for i in x.side_buttons]
     for i,j in zip(x.side_buttons, side_buttons):
         link((i, 'value'), (j, 'value'))
 
-    fader = IntSlider(orientation='vertical', max=127, layout={'height': '250px'})
+    fader = IntSlider(orientation='vertical', max=127, layout={'height': 'inherit'})
     link((fader, 'value'), (x.faders[0], 'value'))
 
     ui = VBox([
@@ -156,7 +157,7 @@ def xtouchmini_ui(x):
                 HBox(buttons[:8]),
                 HBox(buttons[8:])
             ]),
-            VBox(side_buttons)
+            VBox(side_buttons, layout={'align_items': 'flex-end', 'width': '55px'})
         ])
     ])
     return ui
