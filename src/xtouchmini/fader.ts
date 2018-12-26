@@ -39,8 +39,9 @@ export class Fader extends Disposable {
     this._max = max;
     // TODO: provide a 'pickup' fader mode?
     midi.inputs[0].addListener('pitchbend', this._control, e => {
-      // for the xtouch mini, we only have the 7 msb of pitchblend number
-      this.value = (this._max - this._min) * (e.data[2] / 127) + this._min;
+      // for the xtouch mini, we only have the 7 msb of the pitchblend number,
+      // so we only use e.data[2]
+      this.value = Math.round((this._max - this._min) * (e.data[2] / 127)) + this._min;
     });
     this.value = value;
   }
