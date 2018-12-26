@@ -120,10 +120,10 @@ export class XTouchMiniModel extends DOMWidgetModel {
   async setup() {
     // Create control widgets
     return resolvePromisesDict({
-      buttons: Promise.all(this._createButtons())
-      // side_buttons: this._createSideButtons(),
+      buttons: Promise.all(this._createButtons()),
+      side_buttons: Promise.all(this._createSideButtons()),
       // rotary_encoders: this._createRotaryEncoders(),
-      // rotary_buttons: this._createRotaryButtons(),
+      rotary_buttons: Promise.all(this._createRotaryButtons()),
       // faders: this._createFaders()
     });
   }
@@ -155,8 +155,29 @@ export class XTouchMiniModel extends DOMWidgetModel {
     );
   }
 
+  _createSideButtons() {
+    // Buttons are indexed top to bottom.
+    return [0x54, 0x55].map(_control =>
+      this._createButtonModel({
+        _control,
+        mode: 'momentary'
+      })
+    );
+  }
+
+  _createRotaryButtons() {
+    // Buttons are indexed left to right.
+    return [0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27].map(_control =>
+      this._createButtonModel({
+        _control,
+        mode: 'momentary',
+        _light: false
+      })
+    );
+  }
+
   /**
-   * Creates a gamepad button widget.
+   * Creates a button widget.
    */
   async _createButtonModel(state: any): Promise<ButtonModel> {
     return (await this.widget_manager.new_widget(

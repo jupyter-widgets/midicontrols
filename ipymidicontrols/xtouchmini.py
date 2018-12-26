@@ -111,5 +111,11 @@ class XTouchMini(DOMWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="List of buttons").tag(
+    buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Buttons in main area, top row left to right, then bottom row left to right").tag(
+        sync=True, **widget_serialization)
+
+    side_buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Buttons on right side, top to bottom").tag(
+        sync=True, **widget_serialization)
+
+    rotary_buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Rotary buttons left to right").tag(
         sync=True, **widget_serialization)
