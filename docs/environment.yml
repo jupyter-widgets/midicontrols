@@ -3,7 +3,7 @@ name: ipymidicontrols_docs
 channels:
   - conda-forge
 dependencies:
-- python=3.5
+- python=3
 - nodejs
 - numpy
 - sphinx
