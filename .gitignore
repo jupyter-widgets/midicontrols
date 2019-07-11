@@ -154,3 +154,5 @@ ipymidicontrols/labextension/*.tgz
 
 # Packed lab extensions
 ipymidicontrols/labextension
+
+tsconfig.tsbuildinfo
