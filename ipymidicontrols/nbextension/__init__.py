@@ -8,6 +8,6 @@ def _jupyter_nbextension_paths():
     return [{
         'section': 'notebook',
         'src': 'nbextension/static',
-        'dest': '@jupyter-widgets/midicontrols',
-        'require': '@jupyter-widgets/midicontrols/extension'
+        'dest': 'ipymidicontrols',
+        'require': 'ipymidicontrols/extension'
     }]
