@@ -6,7 +6,7 @@ define(function() {
     window['requirejs'].config({
         map: {
             '*': {
-                '@jupyter-widgets/midicontrols': 'nbextensions/@jupyter-widgets/midicontrols/index',
+                '@jupyter-widgets/midicontrols': 'nbextensions/ipymidicontrols/index',
             },
         }
     });
