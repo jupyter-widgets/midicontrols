@@ -9,9 +9,9 @@ The simplest way to install ipymidicontrols is via pip::
 
     pip install ipymidicontrols
 
-or via conda::
+.. or via conda::
 
-    conda install ipymidicontrols
+..    conda install ipymidicontrols
 
 
 If you installed via pip, and notebook version < 5.3, you will also have to
@@ -27,9 +27,9 @@ with::
 
     jupyter labextension install @jupyter-widgets/midicontrols
 
-If you are installing using conda, these commands should be unnecessary, but If
-you need to run them the commands should be the same (just make sure you choose the
-`--sys-prefix` flag).
+In JupyterLab, you will also need to install the ipywidgets extension::
+
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 
 .. links
