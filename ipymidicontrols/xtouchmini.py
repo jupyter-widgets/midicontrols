@@ -5,11 +5,10 @@
 # Distributed under the terms of the Modified BSD License.
 
 """
-TODO: Add module docstring
+Widgets for the X-Touch Mini midi controller
 """
 
-from ipywidgets import DOMWidget, widget_serialization, register
-import ipywidgets
+from ipywidgets import DOMWidget, widget_serialization, register, trait_types
 from traitlets import Unicode, CaselessStrEnum, Bool, CInt, validate, Instance, TraitError
 from ._frontend import module_name, module_version
 
@@ -111,19 +110,19 @@ class XTouchMini(DOMWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Buttons in main area, top row left to right, then bottom row left to right").tag(
+    buttons = trait_types.TypedTuple(trait=Instance(Button), help="Buttons in main area, top row left to right, then bottom row left to right").tag(
         sync=True, **widget_serialization)
 
-    side_buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Buttons on right side, top to bottom").tag(
+    side_buttons = trait_types.TypedTuple(trait=Instance(Button), help="Buttons on right side, top to bottom").tag(
         sync=True, **widget_serialization)
 
-    rotary_buttons = ipywidgets.trait_types.TypedTuple(trait=Instance(Button), help="Rotary buttons left to right").tag(
+    rotary_buttons = trait_types.TypedTuple(trait=Instance(Button), help="Rotary buttons left to right").tag(
         sync=True, **widget_serialization)
 
-    rotary_encoders = ipywidgets.trait_types.TypedTuple(trait=Instance(Rotary), help="Rotary encoders left to right").tag(
+    rotary_encoders = trait_types.TypedTuple(trait=Instance(Rotary), help="Rotary encoders left to right").tag(
         sync=True, **widget_serialization)
 
-    faders = ipywidgets.trait_types.TypedTuple(trait=Instance(Fader), help="Fader").tag(
+    faders = trait_types.TypedTuple(trait=Instance(Fader), help="Fader").tag(
         sync=True, **widget_serialization)
 
 
