@@ -10,7 +10,10 @@
   ],
   "files": [
     "lib/**/*.js",
-    "dist/*.js"
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "dist/*.js",
+    "dist/*.js.map"
   ],
   "homepage": "https://github.com/jupyter-widgets/midicontrols",
   "bugs": {

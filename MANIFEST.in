@@ -2,11 +2,11 @@ include LICENSE.txt
 include README.md
 
 include setupbase.py
-include pytest.ini
-include .coverage.rc
+# include pytest.ini
+# include .coveragerc
 
-include package.json
-include webpack.config.js
+# include package.json
+# include webpack.config.js
 include ipymidicontrols/labextension/*.tgz
 
 # Documentation
@@ -20,12 +20,12 @@ prune docs/dist
 graft examples
 
 # Tests
-graft tests
-prune tests/build
+# graft tests
+# prune tests/build
 
 # Javascript files
 graft ipymidicontrols/nbextension
-graft src
+# graft src
 prune **/node_modules
 prune coverage
 prune lib
