@@ -38,7 +38,12 @@ export class Fader extends Disposable {
     this._min = min;
     this._max = max;
     // TODO: provide a 'pickup' fader mode?
-    midi.inputs[0].addListener('pitchbend', this._control, e => {
+    const input = midi.inputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!input) {
+      throw new Error("Could not find Behringer X-TOUCH MINI");
+    }
+
+    input.addListener('pitchbend', this._control, e => {
       // for the xtouch mini, we only have the 7 msb of the pitchblend number,
       // so we only use e.data[2]
       this.value = Math.round((this._max - this._min) * (e.data[2] / 127)) + this._min;
@@ -51,7 +56,13 @@ export class Fader extends Disposable {
       // TODO: if this value change came from the controller fader, we don't need to send it back?
       const faderValue =
         ((this._value - this._min) / (this._max - this._min)) * 2 - 1;
-      midi.outputs[0].sendPitchBend(faderValue, this._control);
+
+      const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+      if (!output) {
+        throw new Error("Could not find Behringer X-TOUCH MINI");
+      }
+
+      output.sendPitchBend(faderValue, this._control);
     }
   }
 
