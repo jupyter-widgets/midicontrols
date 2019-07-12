@@ -224,9 +224,11 @@ export class XTouchMiniModel extends DOMWidgetModel {
       side_buttons: [],
       rotary_encoders: [],
       rotary_buttons: [],
-      faders: []
+      faders: [],
     };
   }
+
+
 
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
@@ -242,8 +244,14 @@ export class XTouchMiniModel extends DOMWidgetModel {
     if (!midi.enabled) {
       throw new Error('WebMidi library not enabled');
     }
+
+    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!output) {
+      throw new Error("Could not find Behringer X-TOUCH MINI");
+    }
+
     // Make sure we are in MCU protocol mode
-    midi.outputs[0].sendChannelMode(
+    output.sendChannelMode(
       127,
       1 /* MCU mode */,
       1 /* global channel */

@@ -12,7 +12,13 @@ import { Fader } from './fader';
 export class XTouchMini {
   constructor() {
     // Make sure we are in MCU protocol mode
-    midi.outputs[0].sendChannelMode(
+
+    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!output) {
+      throw new Error("Could not find Behringer X-TOUCH MINI");
+    }
+
+    output.sendChannelMode(
       127,
       1 /* MCU mode */,
       1 /* global channel */

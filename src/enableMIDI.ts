@@ -18,7 +18,7 @@ export default async function enableMIDI() {
     }
   });  
   await midiEnabled.promise;
-  // if (!(midi.inputs[0] && midi.outputs[0])) {
+  // if (!(midi.inputs[1] && midi.outputs[1])) {
   //   throw new Error("Could not find MIDI device");
   // }
 }

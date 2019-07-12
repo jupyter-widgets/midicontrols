@@ -24,7 +24,12 @@ export class Rotary extends Disposable {
     this._lightMode = lightMode;
     this._min = min;
     this._max = max;
-    midi.inputs[0].addListener('controlchange', 1, e => {
+    const input = midi.inputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!input) {
+      throw new Error("Could not find Behringer X-TOUCH MINI");
+    }
+
+    input.addListener('controlchange', 1, e => {
       if (e.controller.number === this._control) {
         // Value is relative
         let sign = e.value & 0x40 ? -1 : 1;
@@ -43,7 +48,12 @@ export class Rotary extends Disposable {
         ((this._value - this._min) / (this._max - this._min)) * factor
       ) + 1;
 
-    midi.outputs[0].sendControlChange(
+    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!output) {
+      throw new Error("Could not find Behringer X-TOUCH MINI");
+    }
+
+    output.sendControlChange(
       0x20 + this._control,
       lightModeNums.get(this._lightMode) + leds,
       1
