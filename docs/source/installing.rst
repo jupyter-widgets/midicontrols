@@ -9,9 +9,9 @@ The simplest way to install ipymidicontrols is via pip::
 
     pip install ipymidicontrols
 
-.. or via conda::
+or via conda::
 
-..    conda install ipymidicontrols
+    conda install ipymidicontrols
 
 
 If you installed via pip, and notebook version < 5.3, you will also have to
