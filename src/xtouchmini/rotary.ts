@@ -1,7 +1,7 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import midi from 'webmidi';
+import { MIDIController } from '../midi';
 import { clamp, IChangedArgs } from './utils';
 import { ISignal, Signal } from '@phosphor/signaling';
 import { Disposable } from './disposable';
@@ -11,6 +11,7 @@ export class Rotary extends Disposable {
    * control is the midi CC number.
    */
   constructor(
+    controller: MIDIController,
     control: number,
     {
       lightMode = 'single',
@@ -20,16 +21,13 @@ export class Rotary extends Disposable {
     }: Rotary.IOptions = {}
   ) {
     super();
+    this._controller = controller;
     this._control = control;
     this._lightMode = lightMode;
     this._min = min;
     this._max = max;
-    const input = midi.inputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!input) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
-    }
 
-    input.addListener('controlchange', 1, e => {
+    controller.input.addListener('controlchange', 1, e => {
       if (e.controller.number === this._control) {
         // Value is relative
         let sign = e.value & 0x40 ? -1 : 1;
@@ -48,12 +46,7 @@ export class Rotary extends Disposable {
         ((this._value - this._min) / (this._max - this._min)) * factor
       ) + 1;
 
-    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!output) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
-    }
-
-    output.sendControlChange(
+    this._controller.output.sendControlChange(
       0x20 + this._control,
       lightModeNums.get(this._lightMode) + leds,
       1
@@ -162,11 +155,12 @@ export class Rotary extends Disposable {
 
   private _stateChanged = new Signal<this, Rotary.IStateChanged>(this);
 
-  private _value: number;
-  private _lightMode: Rotary.LightMode;
-  private _min: number;
-  private _max: number;
   private _control: number;
+  private _controller: MIDIController;
+  private _lightMode: Rotary.LightMode;
+  private _max: number;
+  private _min: number;
+  private _value: number;
 }
 
 export namespace Rotary {

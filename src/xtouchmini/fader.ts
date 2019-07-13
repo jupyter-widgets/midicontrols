@@ -1,7 +1,7 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import midi from 'webmidi';
+import { MIDIController } from '../midi';
 import { clamp, IChangedArgs } from './utils';
 import { ISignal, Signal } from '@phosphor/signaling';
 import { Disposable } from './disposable';
@@ -29,6 +29,7 @@ export class Fader extends Disposable {
    * control is the midi pitchblend control number.
    */
   constructor(
+    controller: MIDIController,
     control: MidiChannel,
     { min = 0, max = 127, value = 0, motorized = false }: Fader.IOptions = {}
   ) {
@@ -38,12 +39,8 @@ export class Fader extends Disposable {
     this._min = min;
     this._max = max;
     // TODO: provide a 'pickup' fader mode?
-    const input = midi.inputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!input) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
-    }
 
-    input.addListener('pitchbend', this._control, e => {
+    controller.input.addListener('pitchbend', this._control, e => {
       // for the xtouch mini, we only have the 7 msb of the pitchblend number,
       // so we only use e.data[2]
       this.value = Math.round((this._max - this._min) * (e.data[2] / 127)) + this._min;
@@ -56,13 +53,7 @@ export class Fader extends Disposable {
       // TODO: if this value change came from the controller fader, we don't need to send it back?
       const faderValue =
         ((this._value - this._min) / (this._max - this._min)) * 2 - 1;
-
-      const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-      if (!output) {
-        throw new Error("Could not find Behringer X-TOUCH MINI");
-      }
-
-      output.sendPitchBend(faderValue, this._control);
+      this._controller.output.sendPitchBend(faderValue, this._control);
     }
   }
 
@@ -145,6 +136,7 @@ export class Fader extends Disposable {
 
   private _stateChanged = new Signal<this, Fader.IStateChanged>(this);
 
+  private _controller: MIDIController;
   private _control: MidiChannel;
   private _max: number;
   private _min: number;

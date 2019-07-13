@@ -1,7 +1,7 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import midi from 'webmidi';
+import { MIDIController } from '../midi';
 import { Button } from './button';
 import { Rotary } from './rotary';
 import { Fader } from './fader';
@@ -10,15 +10,9 @@ import { Fader } from './fader';
  * Mini controller in  mode.
  */
 export class XTouchMini {
-  constructor() {
+  constructor(controller: MIDIController) {    
     // Make sure we are in MCU protocol mode
-
-    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!output) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
-    }
-
-    output.sendChannelMode(
+    controller.output.sendChannelMode(
       127,
       1 /* MCU mode */,
       1 /* global channel */
@@ -42,22 +36,22 @@ export class XTouchMini {
       0x5d,
       0x5e,
       0x5f
-    ].map(i => new Button(i, { mode: 'toggle' }));
+    ].map(i => new Button(controller, i, { mode: 'toggle' }));
 
     // The two buttons on the left side, top then bottom.
-    this.sideButtons = [0x54, 0x55].map(i => new Button(i));
+    this.sideButtons = [0x54, 0x55].map(i => new Button(controller, i));
 
     // The press buttons for the rotary encoders, left to right.
     this.rotaryButtons = [0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27].map(
-      i => new Button(i)
+      i => new Button(controller, i)
     );
 
     // Rotary encoders, left to right.
     this.rotary = [0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17].map(
-      i => new Rotary(i)
+      i => new Rotary(controller, i)
     );
 
-    this.fader = new Fader(9);
+    this.fader = new Fader(controller, 9);
   }
 
   refresh() {

@@ -28,6 +28,8 @@ export class ButtonModel extends DOMWidgetModel {
       _view_module_version: MODULE_VERSION,
 
       // Private attributes for just this widget
+      _controller_input: 0,
+      _controller_output: 0,
       _control: 0,
       _light: true,
 
@@ -42,7 +44,9 @@ export class ButtonModel extends DOMWidgetModel {
       throw new Error('WebMidi library not enabled');
     }
     const values = {...this.defaults(), ...attributes};
-    this._button = new Button(values._control, {
+    const input = midi.inputs[values._controller_input];
+    const output = midi.outputs[values._controller_output];
+    this._button = new Button({input, output}, values._control, {
       mode: values.mode,
       light: values._light
     });
@@ -88,6 +92,8 @@ export class RotaryModel extends DOMWidgetModel {
       _view_module_version: MODULE_VERSION,
 
       // Private attributes for just this widget
+      _controller_input: 0,
+      _controller_output: 0,
       _control: 0,
 
       value: 0,
@@ -103,7 +109,9 @@ export class RotaryModel extends DOMWidgetModel {
       throw new Error('WebMidi library not enabled');
     }
     const values = {...this.defaults(), ...attributes};
-    this._rotary = new Rotary(values._control, {
+    const input = midi.inputs[values._controller_input];
+    const output = midi.outputs[values._controller_output];
+    this._rotary = new Rotary({input, output}, values._control, {
       lightMode: values.light_mode,
       min: values.min,
       max: values.max,
@@ -159,6 +167,8 @@ export class FaderModel extends DOMWidgetModel {
       _view_module_version: MODULE_VERSION,
 
       // Private attributes for just this widget
+      _controller_input: 0,
+      _controller_output: 0,
       _control: 0,
 
       value: 0,
@@ -173,7 +183,9 @@ export class FaderModel extends DOMWidgetModel {
       throw new Error('WebMidi library not enabled');
     }
     const values = {...this.defaults(), ...attributes};
-    this._fader = new Fader(values._control, {
+    const input = midi.inputs[values._controller_input];
+    const output = midi.outputs[values._controller_output];
+    this._fader = new Fader({input, output}, values._control, {
       min: values.min,
       max: values.max,
       value: values.value
@@ -225,10 +237,11 @@ export class XTouchMiniModel extends DOMWidgetModel {
       rotary_encoders: [],
       rotary_buttons: [],
       faders: [],
+
+      _controller_input: 0,
+      _controller_output: 0,
     };
   }
-
-
 
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
@@ -245,13 +258,22 @@ export class XTouchMiniModel extends DOMWidgetModel {
       throw new Error('WebMidi library not enabled');
     }
 
-    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!output) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
+    const input = midi.inputs.findIndex(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!input) {
+      throw new Error("Could not find Behringer X-TOUCH MINI input");
     }
 
+    const output = midi.outputs.findIndex(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
+    if (!output) {
+      throw new Error("Could not find Behringer X-TOUCH MINI output");
+    }
+
+    this.set('_controller_input', input);
+    this.set('_controller_output', output);
+
+
     // Make sure we are in MCU protocol mode
-    output.sendChannelMode(
+    midi.outputs[output].sendChannelMode(
       127,
       1 /* MCU mode */,
       1 /* global channel */
@@ -294,7 +316,9 @@ export class XTouchMiniModel extends DOMWidgetModel {
       0x5f
     ].map(_control =>
       this._createButtonModel({
-        _control
+        _control,
+        _controller_input: this.get('_controller_input'),
+        _controller_output: this.get('_controller_output')
       })
     );
   }
@@ -303,7 +327,9 @@ export class XTouchMiniModel extends DOMWidgetModel {
     // Buttons are indexed top to bottom.
     return [0x54, 0x55].map(_control =>
       this._createButtonModel({
-        _control
+        _control,
+        _controller_input: this.get('_controller_input'),
+        _controller_output: this.get('_controller_output')
       })
     );
   }
@@ -313,6 +339,8 @@ export class XTouchMiniModel extends DOMWidgetModel {
     return [0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27].map(_control =>
       this._createButtonModel({
         _control,
+        _controller_input: this.get('_controller_input'),
+        _controller_output: this.get('_controller_output'),
         _light: false
       })
     );
@@ -322,7 +350,9 @@ export class XTouchMiniModel extends DOMWidgetModel {
     // Buttons are indexed left to right.
     return [0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17].map(_control =>
       this._createRotaryModel({
-        _control
+        _control,
+        _controller_input: this.get('_controller_input'),
+        _controller_output: this.get('_controller_output')
       })
     );
   }
@@ -331,7 +361,9 @@ export class XTouchMiniModel extends DOMWidgetModel {
     // Fader are indexed left to right.
     return [9].map(_control =>
       this._createFaderModel({
-        _control
+        _control,
+        _controller_input: this.get('_controller_input'),
+        _controller_output: this.get('_controller_output')
       })
     );
   }
@@ -347,7 +379,7 @@ export class XTouchMiniModel extends DOMWidgetModel {
         model_module_version: MODULE_VERSION,
         view_name: 'ValueView',
         view_module: MODULE_NAME,
-        view_module_version: MODULE_VERSION
+        view_module_version: MODULE_VERSION,
       },
       state
     )) as ButtonModel;

@@ -1,7 +1,7 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import midi from 'webmidi';
+import { MIDIController } from '../midi';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 import { IChangedArgs } from './utils';
@@ -12,31 +12,30 @@ import { Disposable } from './disposable';
  */
 export class Button extends Disposable {
   /**
+   * @param input - MIDI input
    * @param control - the note number corresponding to the button
    * @param light - true when there is an indicator light for the button that
    * should reflect the toggle state.
    */
   constructor(
+    controller: MIDIController,
     control: number,
     { mode = 'momentary', light = true }: Button.IOptions = {}
   ) {
     super();
+    this._controller = controller;
     this._control = control;
     this._mode = mode;
     this._light = light;
-    const input = midi.inputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!input) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
-    }
 
-    input.addListener('noteon', 1, e => {
+    controller.input.addListener('noteon', 1, e => {
       if (this.mode === 'momentary' && e.note.number === this._control) {
         this.toggled = !this._toggled;
         this.refresh();
       }
     });
 
-    input.addListener('noteoff', 1, e => {
+    controller.input.addListener('noteoff', 1, e => {
       if (e.note.number === this._control) {
         this._click.emit(undefined);
         this.toggled = !this._toggled;
@@ -85,13 +84,8 @@ export class Button extends Disposable {
    * * 127 (0x7F): on
    */
   setButtonLight(value: 0 | 1 | 127) {
-    const output = midi.outputs.find(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!output) {
-      throw new Error("Could not find Behringer X-TOUCH MINI");
-    }
-
     if (this._light) {
-      output.playNote(this._control, 1, {
+      this._controller.output.playNote(this._control, 1, {
         velocity: value,
         rawVelocity: true
       });
@@ -123,6 +117,7 @@ export class Button extends Disposable {
   private _stateChanged = new Signal<this, Button.IStateChanged>(this);
 
   private _control: number;
+  private _controller: MIDIController;
   private _light: boolean;
   private _mode: Button.ButtonMode;
   private _toggled = false;
