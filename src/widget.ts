@@ -259,12 +259,12 @@ export class XTouchMiniModel extends DOMWidgetModel {
     }
 
     const input = midi.inputs.findIndex(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!input) {
+    if (input === -1) {
       throw new Error("Could not find Behringer X-TOUCH MINI input");
     }
 
     const output = midi.outputs.findIndex(x => x.manufacturer === "Behringer" && x.name.startsWith("X-TOUCH MINI"));
-    if (!output) {
+    if (output === -1) {
       throw new Error("Could not find Behringer X-TOUCH MINI output");
     }
 
