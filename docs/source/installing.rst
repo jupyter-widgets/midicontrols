@@ -27,9 +27,9 @@ with::
 
     jupyter labextension install @jupyter-widgets/midicontrols
 
-In JupyterLab, you will also need to install the ipywidgets extension::
-
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager
+If you are installing using conda, these commands should be unnecessary, but If
+you need to run them the commands should be the same (just make sure you choose the
+`--sys-prefix` flag).
 
 
 .. links

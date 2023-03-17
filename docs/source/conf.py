@@ -29,8 +29,13 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'nbsphinx',
+    'jupyter_sphinx',
     'nbsphinx_link',
 ]
+
+# Set the nbsphinx JS path to empty to avoid showing twice of the widgets
+nbsphinx_requirejs_path = ""
+nbsphinx_widgets_path = ""
 
 # Ensure our extension is available:
 import sys
@@ -54,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'ipymidicontrols'
-copyright = '2018, Project Jupyter Contributors'
+copyright = '2023, Project Jupyter Contributors'
 author = 'Project Jupyter Contributors'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -83,7 +88,7 @@ release = version_ns['__version__']
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -196,5 +201,13 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 #
 nbsphinx_allow_errors = True # exception ipstruct.py ipython_genutils
 
-# nbsphinx will not have access to a controller, so executing will not work.
-nbsphinx_execute = 'never'
+from sphinx.util import logging
+logger = logging.getLogger(__name__)
+
+def setup(app):
+    def add_scripts(app):
+        for fname in ['helper.js', 'embed-bundle.js']:
+            if not os.path.exists(os.path.join(here, '_static', fname)):
+                logger.warning('missing javascript file: %s' % fname)
+            app.add_js_file(fname)
+    app.connect('builder-inited', add_scripts)

@@ -1,11 +1,11 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { IDisposable } from '@phosphor/disposable';
-import { Signal, ISignal } from '@phosphor/signaling';
+import { IObservableDisposable } from '@lumino/disposable';
+import { Signal, ISignal } from '@lumino/signaling';
 
 export
-class Disposable implements IDisposable {
+class Disposable implements IObservableDisposable {
   /**
    * Dispose of the button.
    *

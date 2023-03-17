@@ -1,10 +1,10 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { MIDIController } from '../midi';
 import { Button } from './button';
 import { Rotary } from './rotary';
 import { Fader } from './fader';
+import { MIDIController } from './utils';
 
 /**
  * Mini controller in  mode.

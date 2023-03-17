@@ -4,10 +4,11 @@
 import midi from 'webmidi';
 
 import {
-  unpack_models,
+  unpack_models as upack_models,
   DOMWidgetModel,
   DOMWidgetView,
   ISerializers,
+  ManagerBase,
   resolvePromisesDict
 } from '@jupyter-widgets/base';
 
@@ -15,6 +16,13 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 import { Button } from './xtouchmini/button';
 import { Rotary } from './xtouchmini/rotary';
 import { Fader } from './xtouchmini/fader';
+
+const unpack_models = (
+  value?: any,
+  manager?: ManagerBase<any>
+): Promise<any> => {
+  return upack_models(value, manager!);
+}
 
 export class ButtonModel extends DOMWidgetModel {
   defaults() {
@@ -74,7 +82,7 @@ export class ButtonModel extends DOMWidgetModel {
 
   destroy(options: any) {
     this._button.dispose();
-    super.destroy(options);
+    return super.destroy(options);
   }
 
   private _button: Button;
@@ -149,7 +157,7 @@ export class RotaryModel extends DOMWidgetModel {
 
   destroy(options: any) {
     this._rotary.dispose();
-    super.destroy(options);
+    return super.destroy(options);
   }
 
   private _rotary: Rotary;
@@ -216,7 +224,7 @@ export class FaderModel extends DOMWidgetModel {
 
   destroy(options: any) {
     this._fader.dispose();
-    super.destroy(options);
+    return super.destroy(options);
   }
 
   private _fader: Fader;

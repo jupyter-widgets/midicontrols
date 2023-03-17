@@ -1,10 +1,10 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { MIDIController } from '../midi';
-import { clamp, IChangedArgs } from './utils';
-import { ISignal, Signal } from '@phosphor/signaling';
+
+import { ISignal, Signal } from '@lumino/signaling';
 import { Disposable } from './disposable';
+import { clamp, IChangedArgs, MIDIController } from './utils';
 
 export class Rotary extends Disposable {
   /**
@@ -48,7 +48,7 @@ export class Rotary extends Disposable {
 
     this._controller.output.sendControlChange(
       0x20 + this._control,
-      lightModeNums.get(this._lightMode) + leds,
+      lightModeNums.get(this._lightMode)! + leds,
       1
     );
   }

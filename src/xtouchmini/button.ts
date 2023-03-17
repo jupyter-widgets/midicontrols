@@ -1,11 +1,9 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { MIDIController } from '../midi';
-
-import { ISignal, Signal } from '@phosphor/signaling';
-import { IChangedArgs } from './utils';
+import { ISignal, Signal } from '@lumino/signaling';
 import { Disposable } from './disposable';
+import { IChangedArgs, MIDIController } from './utils';
 
 /**
  * A button

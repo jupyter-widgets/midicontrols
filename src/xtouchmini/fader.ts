@@ -1,9 +1,8 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { MIDIController } from '../midi';
-import { clamp, IChangedArgs } from './utils';
-import { ISignal, Signal } from '@phosphor/signaling';
+import { clamp, IChangedArgs, MIDIController } from './utils';
+import { ISignal, Signal } from '@lumino/signaling';
 import { Disposable } from './disposable';
 
 export type MidiChannel =
