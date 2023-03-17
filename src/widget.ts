@@ -438,3 +438,5 @@ export class ValueView extends DOMWidgetView {
     this.el.textContent = this.model.get('value');
   }
 }
+
+export class XTouchMiniView extends DOMWidgetView {}

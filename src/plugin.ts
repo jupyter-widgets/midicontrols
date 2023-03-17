@@ -28,7 +28,6 @@ const plugin: IPlugin<Application<Widget>, void> = {
       version: MODULE_VERSION,
       exports: widgetExports,
     });
-    console.log('i still work here');
     return new Promise((resolve, reject) => {
       midi.enable(error => {
         if (error) {
