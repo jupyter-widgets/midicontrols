@@ -10,7 +10,8 @@ import { MIDIController } from './utils';
  * Mini controller in  mode.
  */
 export class XTouchMini {
-  constructor(controller: MIDIController) {    
+  constructor(controller: MIDIController) {   
+    (window as unknown as any).temporary = this; 
     // Make sure we are in MCU protocol mode
     controller.output.sendChannelMode(
       127,

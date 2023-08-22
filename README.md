@@ -25,8 +25,8 @@ jupyter nbextension enable --py [--sys-prefix|--user|--system] ipymidicontrols
 
 Create a dev environment:
 ```bash
-conda create -n ipymidicontrols-dev -c conda-forge nodejs yarn python jupyterlab
-conda activate ipymidicontrols-dev
+mamba create -n ipymidicontrols-dev -c conda-forge nodejs yarn python jupyterlab
+mamba activate ipymidicontrols-dev
 ```
 
 Install the python. This will also build the TS package.
@@ -39,7 +39,7 @@ notebook / lab frontend. For lab, this is done by the command:
 
 ```
 jupyter labextension develop --overwrite .
-yarn run build
+jlpm run build
 ```
 
 For classic notebook, you need to run:
@@ -55,7 +55,7 @@ you might also need another flag instead of `--sys-prefix`, but we won't cover t
 of those flags here.
 
 ### How to see your changes
-#### Typescript:
+#### TypeScript:
 If you use JupyterLab to develop then you can watch the source directory and run JupyterLab at the same time in different
 terminals to watch for changes in the extension's source and automatically rebuild the widget.
 

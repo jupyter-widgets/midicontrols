@@ -23,16 +23,16 @@ const plugin: IPlugin<Application<Widget>, void> = {
   requires: [IJupyterWidgetRegistry],
   autoStart: true,
   activate: (_, registry: IJupyterWidgetRegistry): Promise<void> => {
-    registry.registerWidget({
-      name: MODULE_NAME,
-      version: MODULE_VERSION,
-      exports: widgetExports,
-    });
     return new Promise((resolve, reject) => {
       midi.enable(error => {
         if (error) {
           reject(error);
         } else {
+          registry.registerWidget({
+            name: MODULE_NAME,
+            version: MODULE_VERSION,
+            exports: widgetExports,
+          });
           resolve();
         }
       });

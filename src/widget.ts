@@ -439,4 +439,4 @@ export class ValueView extends DOMWidgetView {
   }
 }
 
-export class XTouchMiniView extends DOMWidgetView {}
+console.log('this file loads');
