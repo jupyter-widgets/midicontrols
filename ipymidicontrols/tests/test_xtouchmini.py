@@ -6,9 +6,9 @@
 
 import pytest
 
-from ..example import ExampleWidget
+from ..xtouchmini import XTouchMini
 
 
 def test_example_creation_blank():
-    w = ExampleWidget()
-    assert w.value == 'Hello World'
+    w = XTouchMini()
+    assert w

@@ -10,10 +10,8 @@
   ],
   "files": [
     "lib/**/*.js",
-    "lib/*.d.ts",
-    "lib/*.js.map",
     "dist/*.js",
-    "dist/*.js.map"
+    "css/*.css"
   ],
   "homepage": "https://github.com/jupyter-widgets/midicontrols",
   "bugs": {
@@ -22,7 +20,7 @@
   "license": "BSD-3-Clause",
   "author": {
     "name": "Project Jupyter Contributors",
-    "email": "jupyter@googlegroups.com"
+    "email": "projectjupyter@gmail.com"
   },
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
@@ -31,58 +29,70 @@
     "url": "https://github.com/jupyter-widgets/midicontrols"
   },
   "scripts": {
-    "build": "npm run build:lib && npm run build:nbextension",
-    "build:labextension": "npm run clean:labextension && mkdirp ipymidicontrols/labextension && cd ipymidicontrols/labextension && npm pack ../..",
+    "build": "yarn run build:lib && yarn run build:nbextension && yarn run build:labextension:dev",
+    "build:prod": "yarn run build:lib && yarn run build:nbextension && yarn run build:labextension",
+    "build:labextension": "jupyter labextension build .",
+    "build:labextension:dev": "jupyter labextension build --development True .",
     "build:lib": "tsc",
-    "build:nbextension": "webpack -p",
-    "build:all": "npm run build:labextension && npm run build:nbextension",
-    "clean": "npm run clean:lib && npm run clean:nbextension && rimraf tsconfig.tsbuildinfo",
+    "build:nbextension": "webpack",
+    "clean": "yarn run clean:lib && yarn run clean:nbextension && yarn run clean:labextension",
     "clean:lib": "rimraf lib",
     "clean:labextension": "rimraf ipymidicontrols/labextension",
     "clean:nbextension": "rimraf ipymidicontrols/nbextension/static/index.js",
-    "prepack": "npm run build:lib",
-    "test": "npm run test:firefox",
-    "test:chrome": "karma start --browsers=Chrome tests/karma.conf.js",
-    "test:debug": "karma start --browsers=Chrome --singleRun=false --debug=true tests/karma.conf.js",
-    "test:firefox": "karma start --browsers=Firefox tests/karma.conf.js",
-    "test:ie": "karma start --browsers=IE tests/karma.conf.js",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "lint:check": "eslint . --ext .ts,.tsx",
+    "prepack": "yarn run build:lib",
+    "test": "jest",
     "watch": "npm-run-all -p watch:*",
     "watch:lib": "tsc -w",
-    "watch:nbextension": "webpack --watch"
+    "watch:nbextension": "webpack --watch --mode=development",
+    "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^1.1.10 || ^2",
-    "@phosphor/signaling": "^1.2.2",
+    "@jupyter-widgets/base": "^1.1.10 || ^2 || ^3 || ^4 || ^5 || ^6",
+    "@jupyter-widgets/base-manager": "^1.0.2",
+    "@lumino/application": "^1.31.3",
+    "@lumino/coreutils": "^1.12.1",
+    "@lumino/signaling": "^1.11.1",
+    "@lumino/widgets": "^1.37.1",
     "webmidi": "^2.5.1"
   },
   "devDependencies": {
-    "@phosphor/application": "^1.6.0",
-    "@phosphor/widgets": "^1.6.0",
-    "@types/expect.js": "^0.3.29",
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.11.6",
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "@jupyterlab/builder": "^3.0.0",
+    "@types/jest": "^26.0.0",
     "@types/webpack-env": "^1.13.6",
-    "expect.js": "^0.3.1",
+    "@typescript-eslint/eslint-plugin": "^3.6.0",
+    "@typescript-eslint/parser": "^3.6.0",
+    "acorn": "^7.2.0",
+    "css-loader": "^3.2.0",
+    "eslint": "^7.4.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "fs-extra": "^7.0.0",
-    "karma": "^3.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-firefox-launcher": "^1.1.0",
-    "karma-ie-launcher": "^1.0.0",
-    "karma-mocha": "^1.3.0",
-    "karma-mocha-reporter": "^2.2.5",
-    "karma-typescript": "^3.0.13",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.0.0",
     "mkdirp": "^0.5.1",
-    "mocha": "^5.2.0",
     "npm-run-all": "^4.1.3",
+    "prettier": "^2.0.5",
     "rimraf": "^2.6.2",
-    "source-map-loader": "^0.2.4",
-    "ts-loader": "^6",
-    "typescript": "~3.5.3",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "yarn": "^1.16"
+    "source-map-loader": "^1.1.3",
+    "style-loader": "^1.0.0",
+    "ts-jest": "^26.0.0",
+    "ts-loader": "^8.0.0",
+    "typescript": "~4.1.3",
+    "webpack": "^5.61.0",
+    "webpack-cli": "^4.0.0"
   },
   "jupyterlab": {
-    "extension": "lib/plugin"
+    "extension": "lib/plugin",
+    "outputDir": "ipymidicontrols/labextension/",
+    "sharedPackages": {
+      "@jupyter-widgets/base": {
+        "bundled": false,
+        "singleton": true
+      }
+    }
   }
 }

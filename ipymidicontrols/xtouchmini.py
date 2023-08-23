@@ -122,7 +122,7 @@ class XTouchMini(DOMWidget):
     rotary_encoders = trait_types.TypedTuple(trait=Instance(Rotary), help="Rotary encoders left to right").tag(
         sync=True, **widget_serialization)
 
-    faders = trait_types.TypedTuple(trait=Instance(Fader), help="Fader").tag(
+    faders = trait_types.TypedTuple(trait=Instance(Fader), help="Fader", default_value=()).tag(
         sync=True, **widget_serialization)
 
 
@@ -146,11 +146,12 @@ def xtouchmini_ui(x):
     for i,j in zip(x.side_buttons, side_buttons):
         link((i, 'value'), (j, 'value'))
 
-    fader = IntSlider(orientation='vertical', max=127, layout={'height': 'inherit'})
-    link((fader, 'value'), (x.faders[0], 'value'))
+    faders = [IntSlider(orientation='vertical', max=127, layout={'height': 'inherit'})]
+    for i,j in zip(x.faders, faders):
+        link((i, 'value'), (j, 'value'))
 
     ui = VBox([
-    HBox([HBox([VBox([j,i]) for i,j in zip(knobs, knob_buttons)]), fader]),
+    HBox([HBox([VBox([j,i]) for i,j in zip(knobs, knob_buttons)]), faders[0]]),
         HBox([
             VBox([
                 HBox(buttons[:8]),

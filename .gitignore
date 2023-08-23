@@ -23,7 +23,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -146,8 +145,7 @@ $RECYCLE.BIN/
 # ----
 
 **/node_modules/
-ipymidicontrols/nbextension/static/index.*
-ipymidicontrols/labextension/*.tgz
+ipymidicontrols/nbextension/index.*
 
 # Coverage data
 # -------------
@@ -155,5 +153,3 @@ ipymidicontrols/labextension/*.tgz
 
 # Packed lab extensions
 ipymidicontrols/labextension
-
-tsconfig.tsbuildinfo

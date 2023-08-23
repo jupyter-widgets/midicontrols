@@ -27,8 +27,9 @@ module.exports = [
     entry: './src/extension.ts',
     output: {
       filename: 'index.js',
-      path: path.resolve(__dirname, 'ipymidicontrols', 'nbextension', 'static'),
-      libraryTarget: 'amd'
+      path: path.resolve(__dirname, 'ipymidicontrols', 'nbextension'),
+      libraryTarget: 'amd',
+      publicPath: '',
     },
     module: {
       rules: rules
@@ -36,6 +37,7 @@ module.exports = [
     devtool: 'source-map',
     externals,
     resolve,
+    mode: 'development',
   },
 
   /**
@@ -63,6 +65,7 @@ module.exports = [
     },
     externals,
     resolve,
+    mode: 'development',
   },
 
 
@@ -85,6 +88,7 @@ module.exports = [
     devtool: 'source-map',
     externals,
     resolve,
+    mode: 'development',
   }
 
 ];

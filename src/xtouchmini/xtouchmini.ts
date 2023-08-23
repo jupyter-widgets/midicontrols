@@ -1,16 +1,17 @@
 // Copyright (c) Project Jupyter Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { MIDIController } from '../midi';
 import { Button } from './button';
 import { Rotary } from './rotary';
 import { Fader } from './fader';
+import { MIDIController } from './utils';
 
 /**
  * Mini controller in  mode.
  */
 export class XTouchMini {
-  constructor(controller: MIDIController) {    
+  constructor(controller: MIDIController) {   
+    (window as unknown as any).temporary = this; 
     // Make sure we are in MCU protocol mode
     controller.output.sendChannelMode(
       127,
